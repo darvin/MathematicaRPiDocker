@@ -1,0 +1,14 @@
+#!/bin/bash
+set -ex
+
+WOLFRAM_DEPS_DIR=/opt/wolfram-deps
+WOLFRAM_DEPS_TGZ=/opt/wolfram-deps.tgz
+for package in $WOLFRAM_DEPS; do  
+	while read -r file; do   
+		[ -f $file ] && echo "copying $file" && mkdir -p $WOLFRAM_DEPS_DIR/`dirname $file` && cp $file $WOLFRAM_DEPS_DIR/$file ; 
+	done < <(dpkg -L $package); 
+done
+
+tar cvzf $WOLFRAM_DEPS_TGZ $WOLFRAM_DEPS_DIR
+
+

@@ -1,0 +1,22 @@
+#!/bin/sh
+set -ex
+echo "Downloading xorg-server source"
+apt-get source xorg-server 
+
+echo "Configuring xorg-server"
+cd xorg-server*
+./configure --enable-static 
+
+echo "Building xorg-server"
+make
+
+cd hw/vfb
+
+echo "Cleaning xvfb"
+make clean
+
+# LDFLAGS=-all-static asks libtool to do static linking
+# LD_EXPORT_SYMBOLS_FLAGS= causes --export-dynamic to be omitted
+# LIBS='...' fills in missing dependencies for static libraries
+echo "Recompiling xvfb"
+make LDFLAGS=-all-static LD_EXPORT_SYMBOLS_FLAG= LIBS='-lfreetype -lgpg-error -lfontenc -ltirpc -lz -lbz2 -lm -lrt -lpthread'
