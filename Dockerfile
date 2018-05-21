@@ -1,7 +1,9 @@
 FROM resin/rpi-raspbian:wheezy
 SHELL ["/bin/bash", "-c"]
 
-ENV WOLFRAM_DEPS "gcc-4.8-base libatlas3-base libgfortran3 libxmu6 libxrender1" 
+ENV WOLFRAM_DEPS "libatlas3-base libpango1.0-0 libcairo2 libglib2.0-0 libffi5 libpixman-1-0 zlib1g libfontconfig1 libfreetype6 libpng12-0 libexpat1 libuuid1 libportaudio2 libharfbuzz0a" 
+
+ 
 
 
 RUN apt-get update --yes && apt-get install --yes wget
@@ -20,10 +22,9 @@ RUN tar cvzf /opt/wolfram-deps.tgz $WOLFRAM_DEPS_DIR
 
 RUN echo debconf shared/accepted-wolfram-eula select true | debconf-set-selections
 
-ENV DEB_FILE wolfram-engine_10.0.0+2014012903_armhf.deb
+ENV DEB_FILE wolfram-engine.deb
 
-RUN wget http://archive.raspberrypi.org/debian/pool/main/w/wolfram-engine/wolfram-engine_10.0.0+2014012903_armhf.deb
-#RUN wget http://archive.raspberrypi.org/debian/pool/main/w/wolfram-engine/$DEB_FILE
+COPY build/wolfram-engine.deb ./wolfram-engine.deb
 
 RUN dpkg --force-all -i  $DEB_FILE
 
